@@ -32,12 +32,16 @@ import Foundation
     }
 
     public subscript(key: Key) -> Value? {
-        get { return value(for: key) }
+        get { return value(forKey: key) }
         set { setValue(newValue: newValue, forKey: key) }
     }
 
-    public func value(for key: Key) -> Value? {
+    public func value(forKey key: Key) -> Value? {
         return dict[key]?.value
+    }
+
+    public func exists(forKey key: Key) -> Bool {
+        return value(forKey: key) != nil
     }
 
     mutating public func setValue(newValue: Value?, forKey key: Key) {
@@ -48,7 +52,8 @@ import Foundation
         }
     }
 
-    mutating public func removeValueForKey(key: Key) -> Value? {
+    @discardableResult
+    mutating public func removeValue(forKey key: Key) -> Value? {
         return dict.removeValue(forKey: key)?.value
     }
 
