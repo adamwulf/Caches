@@ -36,4 +36,22 @@ final class ArrayTests: XCTestCase {
 
         XCTAssertNil(arr.first)
     }
+
+    func testCache3() throws {
+        var arr: WeakArray<Something> = []
+
+        autoreleasepool {
+            let something = Something("value")
+
+            arr.append(something)
+
+            XCTAssertEqual(arr.first, something)
+
+            arr.removeAll()
+
+            XCTAssertEqual(arr.count, 0)
+        }
+
+        XCTAssertNil(arr.first)
+    }
 }

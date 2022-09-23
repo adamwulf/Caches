@@ -62,6 +62,10 @@ import Foundation
         return arr.remove(at: key).value
     }
 
+    mutating public func removeAll() {
+        return arr.removeAll()
+    }
+
     public var count: Int { return arr.count }
 
     public var isEmpty: Bool { return arr.isEmpty }
