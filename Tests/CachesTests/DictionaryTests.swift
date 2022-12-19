@@ -29,4 +29,23 @@ final class DictionaryTests: XCTestCase {
 
         XCTAssertNil(dictionary["key"])
     }
+
+    func testCollection() throws {
+        var dictionary: WeakDictionary<String, Something> = [:]
+
+        autoreleasepool {
+            let something = Something("value")
+
+            dictionary = ["key": something]
+
+            for (key, val) in dictionary {
+                XCTAssertEqual(key, "key")
+                XCTAssertEqual(val, something)
+            }
+
+            XCTAssertEqual(dictionary["key"], something)
+        }
+
+        XCTAssertNil(dictionary["key"])
+    }
 }

@@ -84,10 +84,10 @@ extension WeakDictionary: Collection {
         return dict.keys.count
     }
 
-    public subscript(i: Int) -> Value? {
+    public subscript(i: Int) -> (Key, Value?) {
         let index = dict.keys.index(dict.keys.startIndex, offsetBy: i)
         let key = dict.keys[index]
-        return dict[key]?.value
+        return (key, dict[key]?.value)
     }
 
     public func index(after i: Int) -> Int {
