@@ -11,12 +11,6 @@ import Foundation
 
     private var dict: [Key: Weak<Value>] = [:]
 
-    @usableFromInline
-    final class Weak<T: AnyObject> {
-        weak var value: T?
-        init(_ value: T) { self.value = value }
-    }
-
     public init() {
     }
 

@@ -7,19 +7,10 @@
 
 import Foundation
 
-@frozen public struct WeakArray<Element>: ExpressibleByArrayLiteral, Collection, Sequence {
+@frozen public struct WeakArray<Element: AnyObject>: ExpressibleByArrayLiteral, Collection, Sequence {
     public typealias ArrayLiteralElement = Element
 
     private var arr: [Weak<Element>] = []
-
-    @usableFromInline
-    final class Weak<T> {
-        private weak var _value: AnyObject?
-        var value: T? {
-            return _value as? T
-        }
-        init(_ value: T) { _value = value as AnyObject }
-    }
 
     public init() {
     }
