@@ -40,6 +40,7 @@ import Foundation
     }
 
     mutating public func setValue(newValue: Value?, forKey key: Key) {
+        defer { compact() }
         if let value = newValue {
             dict[key] = Weak(value)
         } else {
@@ -49,6 +50,7 @@ import Foundation
 
     @discardableResult
     mutating public func removeValue(forKey key: Key) -> Value? {
+        defer { compact() }
         return dict.removeValue(forKey: key)?.value
     }
 
@@ -64,6 +66,10 @@ import Foundation
 
     public var values: [Value] {
         return dict.values.compactMap({ $0.value })
+    }
+
+    mutating private func compact() {
+        dict = dict.filter({ $0.value.value != nil })
     }
 }
 
