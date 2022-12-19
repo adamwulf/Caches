@@ -12,7 +12,8 @@ import Foundation
 
     private var arr: [Weak<Element>] = []
 
-    public final class Weak<T> {
+    @usableFromInline
+    final class Weak<T> {
         private weak var _value: AnyObject?
         var value: T? {
             return _value as? T
