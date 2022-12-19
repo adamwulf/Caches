@@ -74,3 +74,23 @@ import Foundation
 }
 
 private func == <T: Hashable>(l: T, r: T) -> Bool { return l.hashValue == r.hashValue }
+
+extension WeakDictionary: Collection {
+    public var startIndex: Int {
+        return 0
+    }
+
+    public var endIndex: Int {
+        return dict.keys.count
+    }
+
+    public subscript(i: Int) -> Value? {
+        let index = dict.keys.index(dict.keys.startIndex, offsetBy: i)
+        let key = dict.keys[index]
+        return dict[key]?.value
+    }
+
+    public func index(after i: Int) -> Int {
+        return i + 1
+    }
+}
