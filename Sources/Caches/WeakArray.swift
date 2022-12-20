@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Adam Wulf on 3/1/22.
 //
@@ -27,23 +27,23 @@ import Foundation
         return value(at: i) != nil
     }
 
-    mutating public func append(_ element: Element) {
+    public mutating func append(_ element: Element) {
         defer { compact() }
         arr.append(Weak(element))
     }
 
-    mutating public func append(contentsOf elements: [Element]) {
+    public mutating func append(contentsOf elements: [Element]) {
         defer { compact() }
         arr.append(contentsOf: elements.map({ Weak($0) }))
     }
 
     @discardableResult
-    mutating public func remove(at key: Int) -> Element? {
+    public mutating func remove(at key: Int) -> Element? {
         defer { compact() }
         return arr.remove(at: key).value
     }
 
-    mutating public func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+    public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
         defer { compact() }
         try arr.removeAll(where: { weakEle in
             guard let ele = weakEle.value else { return true }
@@ -58,7 +58,7 @@ import Foundation
         })
     }
 
-    mutating public func removeAll() {
+    public mutating func removeAll() {
         return arr.removeAll()
     }
 
@@ -74,7 +74,7 @@ import Foundation
         return try arr.compactMap({ $0.value }).compactMap(transform)
     }
 
-    mutating private func compact() {
+    private mutating func compact() {
         arr = arr.filter({ $0.value != nil })
     }
 

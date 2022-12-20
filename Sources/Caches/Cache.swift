@@ -8,7 +8,7 @@
 
 import Foundation
 
-final public class Cache<Key: Hashable, Value> {
+public final class Cache<Key: Hashable, Value> {
 
     // MARK: - Private
 

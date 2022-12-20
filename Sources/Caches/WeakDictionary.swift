@@ -1,6 +1,6 @@
 //
 //  WeakDictionary.swift
-//  
+//
 //
 //  Created by Adam Wulf on 2/16/22.
 //
@@ -39,7 +39,7 @@ import Foundation
         return value(forKey: key) != nil
     }
 
-    mutating public func setValue(newValue: Value?, forKey key: Key) {
+    public mutating func setValue(newValue: Value?, forKey key: Key) {
         defer { compact() }
         if let value = newValue {
             dict[key] = Weak(value)
@@ -49,7 +49,7 @@ import Foundation
     }
 
     @discardableResult
-    mutating public func removeValue(forKey key: Key) -> Value? {
+    public mutating func removeValue(forKey key: Key) -> Value? {
         defer { compact() }
         return dict.removeValue(forKey: key)?.value
     }
@@ -68,7 +68,7 @@ import Foundation
         return dict.values.compactMap({ $0.value })
     }
 
-    mutating private func compact() {
+    private mutating func compact() {
         dict = dict.filter({ $0.value.value != nil })
     }
 }
