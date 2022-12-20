@@ -2,7 +2,7 @@ import XCTest
 @testable import Caches
 
 final class DictionaryTests: XCTestCase {
-    func testCache1() throws {
+    func testDictionary1() throws {
         var dictionary: WeakDictionary<String, Something> = [:]
 
         autoreleasepool {
@@ -16,7 +16,7 @@ final class DictionaryTests: XCTestCase {
         XCTAssertNil(dictionary["key"])
     }
 
-    func testCache2() throws {
+    func testDictionary2() throws {
         var dictionary: WeakDictionary<String, Something> = [:]
 
         autoreleasepool {
