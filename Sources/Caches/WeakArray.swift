@@ -7,7 +7,7 @@
 
 import Foundation
 
-@frozen public struct WeakArray<Element: AnyObject>: ExpressibleByArrayLiteral, Collection, Sequence {
+@frozen public struct WeakArray<Element: AnyObject>: ExpressibleByArrayLiteral {
     public typealias ArrayLiteralElement = Element
 
     private var arr: [Weak<Element>] = []
@@ -17,17 +17,6 @@ import Foundation
 
     public init(arrayLiteral elements: ArrayLiteralElement...) {
         arr = elements.map({ Weak($0) })
-    }
-
-    public subscript(i: Int) -> Element? {
-        get { return arr[i].value }
-        set {
-            if let newValue = newValue {
-                arr[i] = Weak(newValue)
-            } else {
-                arr.remove(at: i)
-            }
-        }
     }
 
     public func value(at i: Int) -> Element? {
@@ -89,6 +78,20 @@ import Foundation
         arr = arr.filter({ $0.value != nil })
     }
 
+    public var first: Element? {
+        return arr.first?.value
+    }
+
+    public func forEach(_ body: (Element) throws -> Void) rethrows {
+        try arr.forEach({
+            if let ele = $0.value {
+                try body(ele)
+            }
+        })
+    }
+}
+
+extension WeakArray: Collection {
     public var startIndex: Int {
         return arr.startIndex
     }
@@ -101,15 +104,14 @@ import Foundation
         return arr.index(after: i)
     }
 
-    public var first: Element? {
-        return arr.first?.value
-    }
-
-    public func forEach(_ body: (Element) throws -> Void) rethrows {
-        try arr.forEach({
-            if let ele = $0.value {
-                try body(ele)
+    public subscript(i: Int) -> Element? {
+        get { return arr[i].value }
+        set {
+            if let newValue = newValue {
+                arr[i] = Weak(newValue)
+            } else {
+                arr.remove(at: i)
             }
-        })
+        }
     }
 }

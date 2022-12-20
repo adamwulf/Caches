@@ -94,12 +94,12 @@ extension WeakDictionary: Collection {
         return Index(dict.endIndex)
     }
 
+    public func index(after i: Index) -> Index {
+        return Index(dict.index(after: i.inner))
+    }
+
     public subscript(i: Index) -> (Key, Value?) {
         let foo = dict[i.inner]
         return (foo.key, foo.value.value)
-    }
-
-    public func index(after i: Index) -> Index {
-        return Index(dict.index(after: i.inner))
     }
 }
