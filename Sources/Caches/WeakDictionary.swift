@@ -76,21 +76,28 @@ import Foundation
 private func == <T: Hashable>(l: T, r: T) -> Bool { return l.hashValue == r.hashValue }
 
 extension WeakDictionary: Collection {
-    public var startIndex: Int {
-        return 0
+    public struct Index: Comparable {
+        public static func < (lhs: Index, rhs: Index) -> Bool {
+            return lhs.inner < rhs.inner
+        }
+
+        let inner: Dictionary<Key, Weak<Value>>.Index
     }
 
-    public var endIndex: Int {
-        return dict.keys.count
+    public var startIndex: Index {
+        return Index(inner: dict.startIndex)
     }
 
-    public subscript(i: Int) -> (Key, Value?) {
-        let index = dict.keys.index(dict.keys.startIndex, offsetBy: i)
-        let key = dict.keys[index]
-        return (key, dict[key]?.value)
+    public var endIndex: Index {
+        return Index(inner: dict.endIndex)
     }
 
-    public func index(after i: Int) -> Int {
-        return i + 1
+    public subscript(i: Index) -> (Key, Value?) {
+        let foo = dict[i.inner]
+        return (foo.key, foo.value.value)
+    }
+
+    public func index(after i: Index) -> Index {
+        return Index(inner: dict.index(after: i.inner))
     }
 }
