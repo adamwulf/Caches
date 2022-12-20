@@ -77,19 +77,21 @@ private func == <T: Hashable>(l: T, r: T) -> Bool { return l.hashValue == r.hash
 
 extension WeakDictionary: Collection {
     public struct Index: Comparable {
+        let inner: Dictionary<Key, Weak<Value>>.Index
+        init(_ inner: Dictionary<Key, Weak<Value>>.Index) {
+            self.inner = inner
+        }
         public static func < (lhs: Index, rhs: Index) -> Bool {
             return lhs.inner < rhs.inner
         }
-
-        let inner: Dictionary<Key, Weak<Value>>.Index
     }
 
     public var startIndex: Index {
-        return Index(inner: dict.startIndex)
+        return Index(dict.startIndex)
     }
 
     public var endIndex: Index {
-        return Index(inner: dict.endIndex)
+        return Index(dict.endIndex)
     }
 
     public subscript(i: Index) -> (Key, Value?) {
@@ -98,6 +100,6 @@ extension WeakDictionary: Collection {
     }
 
     public func index(after i: Index) -> Index {
-        return Index(inner: dict.index(after: i.inner))
+        return Index(dict.index(after: i.inner))
     }
 }
