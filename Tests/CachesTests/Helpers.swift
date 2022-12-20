@@ -7,7 +7,7 @@
 
 import Foundation
 
-class Something: Equatable {
+class Something: Hashable {
     let str: String
     init(_ str: String) {
         self.str = str
@@ -15,5 +15,9 @@ class Something: Equatable {
 
     static func == (lhs: Something, rhs: Something) -> Bool {
         return lhs.str == rhs.str
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(str)
     }
 }

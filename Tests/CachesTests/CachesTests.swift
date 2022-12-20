@@ -24,4 +24,12 @@ final class CachesTests: XCTestCase {
         XCTAssertNil(cache["1"])
         XCTAssertNotNil(cache["1000"])
     }
+
+    func testWeak() throws {
+        let str = "asdfasdf"
+        let val = Something(str)
+        let weak = Weak(val)
+
+        XCTAssertEqual(val.hashValue, weak.hashValue)
+    }
 }

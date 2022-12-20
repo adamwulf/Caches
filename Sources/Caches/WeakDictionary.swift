@@ -11,6 +11,8 @@ import Foundation
 
     private var dict: [Key: Weak<Value>] = [:]
 
+    // MARK: - Initializers
+
     public init() {
     }
 
