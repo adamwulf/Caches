@@ -65,4 +65,51 @@ final class SetTests: XCTestCase {
 
         XCTAssertFalse(arr.contains(where: { $0.str == "value" }))
     }
+
+    func testCollide() throws {
+        var arr: WeakSet<Something> = []
+
+        autoreleasepool {
+            let something1 = Something("value1", "hash")
+            let something2 = Something("value2", "hash")
+
+            arr.insert(something1)
+            XCTAssertEqual(arr.count, 1)
+            XCTAssert(arr.contains(something1))
+            XCTAssertFalse(arr.contains(something2))
+
+            arr.insert(something2)
+            // they collide, so our count is only an estimate
+            XCTAssertEqual(arr.estimatedCount, 1)
+            XCTAssertEqual(arr.count, 2)
+            XCTAssert(arr.contains(something1))
+            XCTAssert(arr.contains(something2))
+        }
+
+        XCTAssertFalse(arr.contains(where: { $0.str.hasPrefix("value") }))
+    }
+
+    func testCollide2() throws {
+        var arr: WeakSet<Something> = []
+        let something1 = Something("value1", "hash")
+        arr.insert(something1)
+
+        XCTAssertEqual(arr.count, 1)
+        XCTAssert(arr.contains(something1))
+
+        autoreleasepool {
+            let something2 = Something("value2", "hash")
+            XCTAssertFalse(arr.contains(something2))
+
+            arr.insert(something2)
+            // they collide, so our count is only an estimate
+            XCTAssertEqual(arr.count, 2)
+            XCTAssert(arr.contains(something1))
+            XCTAssert(arr.contains(something2))
+        }
+
+        XCTAssert(arr.contains(where: { $0.str.hasPrefix("value") }))
+        XCTAssertEqual(arr.estimatedCount, 1)
+        XCTAssertEqual(arr.count, 1)
+    }
 }

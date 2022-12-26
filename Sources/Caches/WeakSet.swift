@@ -39,6 +39,10 @@ import Foundation
     // MARK: - Public Members
 
     public var count: Int {
+        return inner.compactMap({ $0.1.count }).reduce(0, +)
+    }
+
+    public var estimatedCount: Int {
         return inner.count
     }
 
@@ -74,8 +78,8 @@ import Foundation
     }
 
     public func contains(_ member: Element) -> Bool {
-        let val = inner[member.hashValue]
-        return val?.value != nil
+        guard let val = inner[member.hashValue] else { return false }
+        return val.contains(member)
     }
 
     public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {

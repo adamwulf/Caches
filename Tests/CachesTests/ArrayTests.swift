@@ -115,8 +115,10 @@ final class ArrayTests: XCTestCase {
         XCTAssertNil(arr.first)
 
         // we haven't compacted, even though we have all nil items
-        XCTAssertEqual(arr.count, 1)
+        XCTAssertEqual(arr.estimatedCount, 1)
+        XCTAssertEqual(arr.count, 0)
         arr.compact()
+        XCTAssertEqual(arr.estimatedCount, 0)
         XCTAssertEqual(arr.count, 0)
     }
 

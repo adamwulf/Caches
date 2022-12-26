@@ -9,8 +9,10 @@ import Foundation
 
 class Something: Hashable {
     let str: String
-    init(_ str: String) {
+    private let hash: String?
+    init(_ str: String, _ hash: String? = nil) {
         self.str = str
+        self.hash = hash
     }
 
     static func == (lhs: Something, rhs: Something) -> Bool {
@@ -18,6 +20,10 @@ class Something: Hashable {
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(str)
+        if let hash = hash {
+            hasher.combine(hash)
+        } else {
+            hasher.combine(str)
+        }
     }
 }

@@ -66,7 +66,9 @@ import Foundation
         return arr.removeAll()
     }
 
-    public var count: Int { return arr.count }
+    public var count: Int { return arr.compactMap({ $0.value }).count }
+
+    public var estimatedCount: Int { return arr.count }
 
     public var isEmpty: Bool { return arr.isEmpty }
 
