@@ -70,7 +70,7 @@ import Foundation
         return dict.values.compactMap({ $0.value })
     }
 
-    private mutating func compact() {
+    public mutating func compact() {
         dict = dict.filter({ $0.value.value != nil })
     }
 }

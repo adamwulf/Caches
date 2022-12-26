@@ -81,4 +81,43 @@ final class ArrayTests: XCTestCase {
 
         XCTAssertNil(arr.first)
     }
+
+    func testStrongToWeak() throws {
+        var arr: WeakArray<Something> = []
+
+        autoreleasepool {
+            let something1 = Something("value1")
+            let something2 = Something("value2")
+            let something3 = Something("value3")
+
+            arr = WeakArray([something1, something2, something3])
+
+            XCTAssertEqual(arr.first, something1)
+            XCTAssertEqual(arr.last, something3)
+
+            arr.removeAll(where: { $0.str == "value1" })
+            XCTAssertEqual(arr.count, 2)
+        }
+
+        XCTAssertNil(arr.first)
+    }
+
+    func testCompact() throws {
+        var arr: WeakArray<Something> = []
+
+        autoreleasepool {
+            let something = Something("value1")
+            arr.append(something)
+            XCTAssertEqual(arr.count, 1)
+            XCTAssertNotNil(arr.first)
+        }
+
+        XCTAssertNil(arr.first)
+
+        // we haven't compacted, even though we have all nil items
+        XCTAssertEqual(arr.count, 1)
+        arr.compact()
+        XCTAssertEqual(arr.count, 0)
+    }
+
 }

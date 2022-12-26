@@ -19,6 +19,10 @@ import Foundation
         arr = elements.map({ Weak($0) })
     }
 
+    public init(_ elements: [Element]) {
+        arr = elements.map({ Weak($0) })
+    }
+
     public func value(at i: Int) -> Element? {
         return arr[i].value
     }
@@ -74,12 +78,24 @@ import Foundation
         return try arr.compactMap({ $0.value }).compactMap(transform)
     }
 
-    private mutating func compact() {
+    public mutating func compact() {
         arr = arr.filter({ $0.value != nil })
     }
 
     public var first: Element? {
-        return arr.first?.value
+        for item in arr {
+            guard let item = item.value else { continue }
+            return item
+        }
+        return nil
+    }
+
+    public var last: Element? {
+        for item in arr.reversed() {
+            guard let item = item.value else { continue }
+            return item
+        }
+        return nil
     }
 
     public func forEach(_ body: (Element) throws -> Void) rethrows {

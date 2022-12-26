@@ -10,7 +10,7 @@ import Foundation
 @frozen public struct WeakSet<Element: AnyObject & Hashable>: ExpressibleByArrayLiteral {
     public typealias ArrayLiteralElement = Element
 
-    private var inner: [Int: Weak<Element>] = [:]
+    private var inner: [Int: WeakArray<Element>] = [:]
 
     // MARK: - Initializers
 
@@ -22,16 +22,17 @@ import Foundation
     }
 
     public init<T: Sequence>(_ elements: T) where T.Element == Element {
-        inner = Dictionary(elements.map({ ($0.hashValue, Weak($0)) }), uniquingKeysWith: { val1, _ in
-            return val1
-        })
+        inner = [:]
+        for ele in elements {
+            insert(ele)
+        }
     }
 
     public init(arrayLiteral elements: ArrayLiteralElement...) {
         self.init(elements)
     }
 
-    internal init(inner: [Int: Weak<Element>]) {
+    internal init(inner: [Int: WeakArray<Element>]) {
         self.inner = inner
     }
 
@@ -42,9 +43,11 @@ import Foundation
     }
 
     public var first: Element? {
-        for (_, val) in inner {
-            guard let ele = val.value else { continue }
-            return ele
+        for (_, collisions) in inner {
+            for item in collisions {
+                guard let ele = item else { continue }
+                return ele
+            }
         }
         return nil
     }
@@ -54,10 +57,15 @@ import Foundation
     @discardableResult
     public mutating func insert(_ newMember: Element) -> (inserted: Bool, memberAfterInsert: Element) {
         let hash = newMember.hashValue
-        if let old = inner[hash], let oldValue = old.value {
+        if let old = inner[hash], let maybeVal = old.first(where: { $0 == newMember }), let oldValue = maybeVal {
             return (false, oldValue)
         }
-        inner[hash] = Weak(newMember)
+        if var arr = inner[hash] {
+            arr.append(newMember)
+            inner[hash] = arr
+        } else {
+            inner[hash] = [newMember]
+        }
         return (true, newMember)
     }
 
@@ -71,27 +79,35 @@ import Foundation
     }
 
     public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
-        for (_, item) in inner {
-            guard let value = item.value, try predicate(value) else { continue }
-            return true
+        for (_, collisions) in inner {
+            for item in collisions {
+                guard let value = item, try predicate(value) else { continue }
+                return true
+            }
         }
         return false
     }
 
     public mutating func removeAll(where predicate: (Element) throws -> Bool) rethrows -> Bool {
         var didRemove = false
-        for (key, item) in inner {
-            guard let value = item.value, try predicate(value) else { continue }
-            inner.removeValue(forKey: key)
-            didRemove = true
+        for (key, var collisions) in inner {
+            for i in collisions.indices {
+                let item = collisions[i]
+                guard let value = item, try predicate(value) else { continue }
+                collisions.remove(at: i)
+                inner[key] = collisions
+                didRemove = true
+            }
         }
         return didRemove
     }
 
     public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> WeakSet<Element> {
-        let result = try inner.filter({ _, item in
-            guard let item = item.value else { return false }
-            return try isIncluded(item)
+        let result = try inner.compactMapValues({ collisions in
+            WeakArray(try collisions.filter({
+                guard let item = $0 else { return false }
+                return try isIncluded(item)
+            }).compactMap({ $0 }))
         })
         return WeakSet(inner: result)
     }
