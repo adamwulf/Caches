@@ -8,6 +8,7 @@
 
 import Foundation
 
+/// Wrap `NSCache` to allow for Swift struct keys and values
 public final class Cache<Key: Hashable, Value> {
 
     // MARK: - Private

@@ -68,8 +68,10 @@ final class DictionaryTests: XCTestCase {
 
         XCTAssertNil(dictionary["key"])
         // we still have a count of 1 even though the item is nil
-        XCTAssertEqual(dictionary.count, 1)
+        XCTAssertEqual(dictionary.estimatedCount, 1)
+        XCTAssertEqual(dictionary.count, 0)
         dictionary.compact()
+        XCTAssertEqual(dictionary.estimatedCount, 0)
         XCTAssertEqual(dictionary.count, 0)
     }
 }

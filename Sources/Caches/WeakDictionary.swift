@@ -56,7 +56,9 @@ import Foundation
         return dict.removeValue(forKey: key)?.value
     }
 
-    public var count: Int { return dict.count }
+    public var estimatedCount: Int { return dict.count }
+
+    public var count: Int { return dict.compactMapValues({ $0.value }).count }
 
     public var isEmpty: Bool { return dict.isEmpty }
 

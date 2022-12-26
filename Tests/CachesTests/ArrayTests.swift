@@ -121,5 +121,4 @@ final class ArrayTests: XCTestCase {
         XCTAssertEqual(arr.estimatedCount, 0)
         XCTAssertEqual(arr.count, 0)
     }
-
 }
