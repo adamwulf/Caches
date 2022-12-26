@@ -42,12 +42,15 @@ final class SetTests: XCTestCase {
         var set: WeakSet<Something> = []
 
         autoreleasepool {
-            let something = Something("value")
+            let something1 = Something("value1")
 
-            set.insert(something)
-            XCTAssertEqual(set.first, something)
-            XCTAssert(set.contains(where: { $0.str == "value" }))
-            XCTAssert(set.contains(something))
+            set.insert(something1)
+            XCTAssertEqual(set.first, something1)
+            XCTAssert(set.contains(where: { $0.str == "value1" }))
+            XCTAssert(set.contains(something1))
+
+            let something2 = Something("value2")
+            XCTAssertFalse(set.contains(something2))
         }
 
         XCTAssertFalse(set.contains(where: { $0.str == "value" }))

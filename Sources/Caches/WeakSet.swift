@@ -77,21 +77,17 @@ import Foundation
     }
 
     public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
-        for (_, collisions) in inner {
-            if try collisions.contains(where: predicate) {
-                return true
-            }
+        for (_, collisions) in inner where try collisions.contains(where: predicate) {
+            return true
         }
         return false
     }
 
     public mutating func removeAll(where predicate: (Element) throws -> Bool) rethrows -> Bool {
         var didRemove = false
-        for (key, var collisions) in inner {
-            if try collisions.removeAll(where: predicate) {
-                inner[key] = collisions
-                didRemove = true
-            }
+        for (key, var collisions) in inner where try collisions.removeAll(where: predicate) {
+            inner[key] = collisions
+            didRemove = true
         }
         return didRemove
     }
