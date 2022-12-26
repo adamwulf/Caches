@@ -38,13 +38,9 @@ import Foundation
 
     // MARK: - Public Members
 
-    public var count: Int {
-        return inner.compactMap({ $0.1.count }).reduce(0, +)
-    }
+    public var count: Int { return inner.compactMap({ $0.1.count }).reduce(0, +) }
 
-    public var estimatedCount: Int {
-        return inner.count
-    }
+    public var estimatedCount: Int { return inner.count }
 
     public var first: Element? {
         for (_, collisions) in inner {
