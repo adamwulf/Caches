@@ -10,106 +10,132 @@ import XCTest
 
 final class SetTests: XCTestCase {
     func testCache1() throws {
-        var arr: WeakSet<Something> = []
+        var set: WeakSet<Something> = []
 
         autoreleasepool {
             let something = Something("value")
 
-            arr.insert(something)
-            XCTAssertEqual(arr.first, something)
+            set.insert(something)
+            XCTAssertEqual(set.first, something)
         }
 
-        XCTAssertNil(arr.first)
+        XCTAssertNil(set.first)
     }
 
     func testCache2() throws {
-        var arr: WeakSet<Something> = []
+        var set: WeakSet<Something> = []
 
         autoreleasepool {
             let something = Something("value")
 
-            arr.insert(something)
-            XCTAssertEqual(arr.first, something)
+            set.insert(something)
+            XCTAssertEqual(set.first, something)
         }
 
-        XCTAssertNil(arr.first)
+        XCTAssertNil(set.first)
     }
 
     func testCache3() throws {
-        var arr: WeakSet<Something> = []
+        var set: WeakSet<Something> = []
 
         autoreleasepool {
             let something = Something("value")
 
-            arr.insert(something)
-            XCTAssertEqual(arr.first, something)
+            set.insert(something)
+            XCTAssertEqual(set.first, something)
 
-            arr.removeAll()
-            XCTAssertEqual(arr.count, 0)
+            set.removeAll()
+            XCTAssertEqual(set.count, 0)
         }
 
-        XCTAssertNil(arr.first)
+        XCTAssertNil(set.first)
     }
 
     func testCache4() throws {
-        var arr: WeakSet<Something> = []
+        var set: WeakSet<Something> = []
 
         autoreleasepool {
             let something = Something("value")
 
-            arr.insert(something)
-            XCTAssertEqual(arr.first, something)
-            XCTAssert(arr.contains(something))
-            XCTAssert(arr.contains(where: { $0.str == "value" }))
+            set.insert(something)
+            XCTAssertEqual(set.first, something)
+            XCTAssert(set.contains(something))
+            XCTAssert(set.contains(where: { $0.str == "value" }))
         }
 
-        XCTAssertFalse(arr.contains(where: { $0.str == "value" }))
+        XCTAssertFalse(set.contains(where: { $0.str == "value" }))
     }
 
     func testCollide() throws {
-        var arr: WeakSet<Something> = []
+        var set: WeakSet<Something> = []
 
         autoreleasepool {
             let something1 = Something("value1", "hash")
             let something2 = Something("value2", "hash")
 
-            arr.insert(something1)
-            XCTAssertEqual(arr.count, 1)
-            XCTAssert(arr.contains(something1))
-            XCTAssertFalse(arr.contains(something2))
+            set.insert(something1)
+            XCTAssertEqual(set.count, 1)
+            XCTAssert(set.contains(something1))
+            XCTAssertFalse(set.contains(something2))
 
-            arr.insert(something2)
+            set.insert(something2)
             // they collide, so our count is only an estimate
-            XCTAssertEqual(arr.estimatedCount, 1)
-            XCTAssertEqual(arr.count, 2)
-            XCTAssert(arr.contains(something1))
-            XCTAssert(arr.contains(something2))
+            XCTAssertEqual(set.estimatedCount, 1)
+            XCTAssertEqual(set.count, 2)
+            XCTAssert(set.contains(something1))
+            XCTAssert(set.contains(something2))
         }
 
-        XCTAssertFalse(arr.contains(where: { $0.str.hasPrefix("value") }))
+        XCTAssertFalse(set.contains(where: { $0.str.hasPrefix("value") }))
     }
 
     func testCollide2() throws {
-        var arr: WeakSet<Something> = []
+        var set: WeakSet<Something> = []
         let something1 = Something("value1", "hash")
-        arr.insert(something1)
+        set.insert(something1)
 
-        XCTAssertEqual(arr.count, 1)
-        XCTAssert(arr.contains(something1))
+        XCTAssertEqual(set.count, 1)
+        XCTAssert(set.contains(something1))
 
         autoreleasepool {
             let something2 = Something("value2", "hash")
-            XCTAssertFalse(arr.contains(something2))
+            XCTAssertFalse(set.contains(something2))
 
-            arr.insert(something2)
+            set.insert(something2)
             // they collide, so our count is only an estimate
-            XCTAssertEqual(arr.count, 2)
-            XCTAssert(arr.contains(something1))
-            XCTAssert(arr.contains(something2))
+            XCTAssertEqual(set.count, 2)
+            XCTAssert(set.contains(something1))
+            XCTAssert(set.contains(something2))
         }
 
-        XCTAssert(arr.contains(where: { $0.str.hasPrefix("value") }))
-        XCTAssertEqual(arr.estimatedCount, 1)
-        XCTAssertEqual(arr.count, 1)
+        XCTAssert(set.contains(where: { $0.str.hasPrefix("value") }))
+        XCTAssertEqual(set.estimatedCount, 1)
+        XCTAssertEqual(set.count, 1)
+    }
+
+    func testEstimatedSize() throws {
+        var set: WeakSet<Something> = []
+        let something1 = Something("value1")
+        set.insert(something1)
+
+        XCTAssertEqual(set.count, 1)
+        XCTAssertEqual(set.estimatedCount, 1)
+
+        autoreleasepool {
+            let something2 = Something("value2")
+
+            set.insert(something2)
+            // they collide, so our count is only an estimate
+            XCTAssertEqual(set.count, 2)
+            XCTAssertEqual(set.estimatedCount, 2)
+            XCTAssert(set.contains(something1))
+            XCTAssert(set.contains(something2))
+        }
+
+        XCTAssertEqual(set.count, 1)
+        XCTAssertEqual(set.estimatedCount, 2)
+        set.compact()
+        XCTAssertEqual(set.count, 1)
+        XCTAssertEqual(set.estimatedCount, 1)
     }
 }

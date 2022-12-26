@@ -111,4 +111,13 @@ import Foundation
         })
         return WeakSet(inner: result)
     }
+
+    public mutating func compact() {
+        inner = inner.compactMapValues({ items in
+            var items = items
+            items.compact()
+            guard !items.isEmpty else { return nil }
+            return items
+        })
+    }
 }
