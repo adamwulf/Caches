@@ -9,7 +9,7 @@ import XCTest
 @testable import Caches
 
 final class ArrayTests: XCTestCase {
-    func testCache1() throws {
+    func testAppend() throws {
         var arr: WeakArray<Something> = []
 
         autoreleasepool {
@@ -22,20 +22,7 @@ final class ArrayTests: XCTestCase {
         XCTAssertNil(arr.first)
     }
 
-    func testCache2() throws {
-        var arr: WeakArray<Something> = []
-
-        autoreleasepool {
-            let something = Something("value")
-
-            arr.append(something)
-            XCTAssertEqual(arr.first, something)
-        }
-
-        XCTAssertNil(arr.first)
-    }
-
-    func testCache3() throws {
+    func testRemoveAll() throws {
         var arr: WeakArray<Something> = []
 
         autoreleasepool {
@@ -51,7 +38,7 @@ final class ArrayTests: XCTestCase {
         XCTAssertNil(arr.first)
     }
 
-    func testCache4() throws {
+    func testContains() throws {
         var arr: WeakArray<Something> = []
 
         autoreleasepool {
@@ -66,7 +53,7 @@ final class ArrayTests: XCTestCase {
         XCTAssertFalse(arr.contains(where: { $0.str == "value" }))
     }
 
-    func testCache5() throws {
+    func testRemoveWhere() throws {
         var arr: WeakArray<Something> = []
 
         autoreleasepool {
@@ -74,6 +61,9 @@ final class ArrayTests: XCTestCase {
 
             arr.append(something)
             XCTAssertEqual(arr.first, something)
+
+            arr.removeAll(where: { $0.str == "fumble" })
+            XCTAssertEqual(arr.count, 1)
 
             arr.removeAll(where: { $0.str == "value" })
             XCTAssertEqual(arr.count, 0)

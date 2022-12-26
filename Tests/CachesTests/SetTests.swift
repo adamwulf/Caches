@@ -9,7 +9,7 @@ import XCTest
 @testable import Caches
 
 final class SetTests: XCTestCase {
-    func testCache1() throws {
+    func testInsert() throws {
         var set: WeakSet<Something> = []
 
         autoreleasepool {
@@ -22,20 +22,7 @@ final class SetTests: XCTestCase {
         XCTAssertNil(set.first)
     }
 
-    func testCache2() throws {
-        var set: WeakSet<Something> = []
-
-        autoreleasepool {
-            let something = Something("value")
-
-            set.insert(something)
-            XCTAssertEqual(set.first, something)
-        }
-
-        XCTAssertNil(set.first)
-    }
-
-    func testCache3() throws {
+    func testRemoveAll() throws {
         var set: WeakSet<Something> = []
 
         autoreleasepool {
@@ -51,7 +38,7 @@ final class SetTests: XCTestCase {
         XCTAssertNil(set.first)
     }
 
-    func testCache4() throws {
+    func testContains() throws {
         var set: WeakSet<Something> = []
 
         autoreleasepool {
