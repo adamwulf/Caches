@@ -47,12 +47,17 @@ import Foundation
         return arr.remove(at: key).value
     }
 
-    public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows {
+    @discardableResult
+    public mutating func removeAll(where shouldBeRemoved: (Element) throws -> Bool) rethrows -> Bool {
         defer { compact() }
+        var didRemove = false
         try arr.removeAll(where: { weakEle in
             guard let ele = weakEle.value else { return true }
-            return try shouldBeRemoved(ele)
+            let ret = try shouldBeRemoved(ele)
+            didRemove = didRemove || ret
+            return ret
         })
+        return didRemove
     }
 
     public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {

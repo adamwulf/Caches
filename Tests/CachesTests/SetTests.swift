@@ -59,8 +59,8 @@ final class SetTests: XCTestCase {
 
             set.insert(something)
             XCTAssertEqual(set.first, something)
-            XCTAssert(set.contains(something))
             XCTAssert(set.contains(where: { $0.str == "value" }))
+            XCTAssert(set.contains(something))
         }
 
         XCTAssertFalse(set.contains(where: { $0.str == "value" }))

@@ -44,10 +44,8 @@ import Foundation
 
     public var first: Element? {
         for (_, collisions) in inner {
-            for item in collisions {
-                guard let ele = item else { continue }
-                return ele
-            }
+            guard let ele = collisions.first else { continue }
+            return ele
         }
         return nil
     }
@@ -80,8 +78,7 @@ import Foundation
 
     public func contains(where predicate: (Element) throws -> Bool) rethrows -> Bool {
         for (_, collisions) in inner {
-            for item in collisions {
-                guard let value = item, try predicate(value) else { continue }
+            if try collisions.contains(where: predicate) {
                 return true
             }
         }
@@ -91,10 +88,7 @@ import Foundation
     public mutating func removeAll(where predicate: (Element) throws -> Bool) rethrows -> Bool {
         var didRemove = false
         for (key, var collisions) in inner {
-            for i in collisions.indices {
-                let item = collisions[i]
-                guard let value = item, try predicate(value) else { continue }
-                collisions.remove(at: i)
+            if try collisions.removeAll(where: predicate) {
                 inner[key] = collisions
                 didRemove = true
             }
