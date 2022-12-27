@@ -22,6 +22,37 @@ final class SetTests: XCTestCase {
         XCTAssertNil(set.first)
     }
 
+    func testInsertTwice() throws {
+        var set: WeakSet<Something> = []
+
+        autoreleasepool {
+            let something = Something("value")
+
+            set.insert(something)
+            set.insert(something)
+            XCTAssertEqual(set.first, something)
+            XCTAssertEqual(set.count, 1)
+            XCTAssertEqual(set.estimatedCount, 1)
+        }
+
+        XCTAssertEqual(set.count, 0)
+        XCTAssertNil(set.first)
+    }
+
+    func testInitArray() throws {
+        var set: WeakSet<Something> = []
+
+        autoreleasepool {
+            let something1 = Something("value1")
+            let something2 = Something("value2")
+
+            set = WeakSet([something1, something2])
+            XCTAssert(set.contains(something1))
+        }
+
+        XCTAssertFalse(set.contains(where: { $0.str == "value1" }))
+    }
+
     func testRemoveAll() throws {
         var set: WeakSet<Something> = []
 
@@ -127,5 +158,69 @@ final class SetTests: XCTestCase {
         set.compact()
         XCTAssertEqual(set.count, 1)
         XCTAssertEqual(set.estimatedCount, 1)
+    }
+
+    func testFilter() throws {
+        let something1 = Something("value1")
+        let something2 = Something("value2")
+        let set1: WeakSet<Something> = [something1, something2]
+        let set2 = set1.filter({ $0.str.hasSuffix("1") })
+
+        XCTAssert(set1.contains(where: { $0.str == "value1" }))
+        XCTAssert(set1.contains(where: { $0.str == "value2" }))
+        XCTAssert(set2.contains(where: { $0.str == "value1" }))
+        XCTAssertFalse(set2.contains(where: { $0.str == "value2" }))
+    }
+
+    // Test that the filter method can handle null values
+    func testFilterWithNull() throws {
+        let something1 = Something("value1")
+        var set1: WeakSet<Something> = [something1]
+
+        autoreleasepool {
+            let something2 = Something("value2")
+            set1.insert(something2)
+        }
+
+        let set2 = set1.filter({ $0.str.hasSuffix("1") })
+
+        XCTAssert(set1.contains(where: { $0.str == "value1" }))
+        XCTAssertFalse(set1.contains(where: { $0.str == "value2" }))
+        XCTAssert(set2.contains(where: { $0.str == "value1" }))
+        XCTAssertFalse(set2.contains(where: { $0.str == "value2" }))
+    }
+
+    func testRemoveWhere() throws {
+        let something1 = Something("value1")
+        let something2 = Something("value2")
+        var set1: WeakSet<Something> = [something1, something2]
+
+        XCTAssert(set1.contains(where: { $0.str == "value1" }))
+        XCTAssert(set1.contains(where: { $0.str == "value2" }))
+
+        XCTAssert(set1.removeAll(where: { $0.str.hasSuffix("1") }))
+
+        XCTAssert(set1.contains(where: { $0.str == "value2" }))
+        XCTAssertFalse(set1.contains(where: { $0.str == "value1" }))
+
+        XCTAssertFalse(set1.removeAll(where: { $0.str.hasSuffix("1") }))
+    }
+
+    func testCompact() throws {
+        let something1 = Something("value1")
+        var set: WeakSet<Something> = [something1]
+
+        autoreleasepool {
+            let something2 = Something("value2")
+
+            set.insert(something2)
+            XCTAssert(set.contains(something2))
+        }
+
+        XCTAssertEqual(set.estimatedCount, 2)
+        XCTAssertEqual(set.count, 1)
+        set.compact()
+        XCTAssertEqual(set.estimatedCount, 1)
+        XCTAssertEqual(set.count, 1)
     }
 }

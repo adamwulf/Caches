@@ -83,6 +83,7 @@ import Foundation
         return false
     }
 
+    @discardableResult
     public mutating func removeAll(where predicate: (Element) throws -> Bool) rethrows -> Bool {
         var didRemove = false
         for (key, var collisions) in inner where try collisions.removeAll(where: predicate) {
