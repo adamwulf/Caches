@@ -77,7 +77,7 @@ import Foundation
 
     public var isEmpty: Bool { return arr.isEmpty }
 
-    public func map<T>(_ transform: (Element) throws -> T) throws -> [T] {
+    public func map<T>(_ transform: (Element) throws -> T) rethrows -> [T] {
         return try arr.compactMap({ $0.value }).map(transform)
     }
 
@@ -124,14 +124,22 @@ extension WeakArray: Collection {
     }
 
     public func index(after i: Int) -> Int {
-        return arr.index(after: i)
+        var i = arr.index(after: i)
+        while i < arr.count, arr[i].value == nil {
+            i = arr.index(after: i)
+        }
+        return i
     }
 
     public subscript(i: Int) -> Element? {
         get { return arr[i].value }
         set {
             if let newValue = newValue {
-                arr[i] = Weak(newValue)
+                if i == arr.count {
+                    arr.append(Weak(newValue))
+                } else {
+                    arr[i] = Weak(newValue)
+                }
             } else {
                 arr.remove(at: i)
             }
