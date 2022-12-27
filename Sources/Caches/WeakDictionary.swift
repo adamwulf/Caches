@@ -56,6 +56,10 @@ import Foundation
         return dict.removeValue(forKey: key)?.value
     }
 
+    public mutating func removeAll(keepingCapacity: Bool = false) {
+        dict.removeAll(keepingCapacity: keepingCapacity)
+    }
+
     public var count: Int { return dict.compactMapValues({ $0.value }).count }
 
     public var estimatedCount: Int { return dict.count }
@@ -76,8 +80,6 @@ import Foundation
         dict = dict.filter({ $0.value.value != nil })
     }
 }
-
-private func == <T: Hashable>(l: T, r: T) -> Bool { return l.hashValue == r.hashValue }
 
 extension WeakDictionary: Collection {
     public struct Index: Comparable {
