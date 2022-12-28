@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// A `WeakDictionary` holds all of its values weakly. If keys are objects, they are held strongly.
 @frozen public struct WeakDictionary<Key: Hashable, Value: AnyObject>: ExpressibleByDictionaryLiteral {
 
     private var dict: [Key: Weak<Value>] = [:]

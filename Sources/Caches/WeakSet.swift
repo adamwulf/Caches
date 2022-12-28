@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// A `WeakSet` holds all of its items weakly.
 @frozen public struct WeakSet<Element: AnyObject & Hashable>: ExpressibleByArrayLiteral {
     public typealias ArrayLiteralElement = Element
 

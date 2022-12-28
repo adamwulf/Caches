@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// A `WeakArray` holds all of its object elements weakly.
 @frozen public struct WeakArray<Element: AnyObject>: ExpressibleByArrayLiteral {
     public typealias ArrayLiteralElement = Element
 
