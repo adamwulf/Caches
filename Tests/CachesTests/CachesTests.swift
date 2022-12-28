@@ -22,6 +22,8 @@ final class CachesTests: XCTestCase {
         }
 
         XCTAssertNil(cache["1"])
+        XCTAssertNil(cache["990"])
+        XCTAssertNotNil(cache["991"])
         XCTAssertNotNil(cache["1000"])
     }
 
@@ -32,4 +34,27 @@ final class CachesTests: XCTestCase {
 
         XCTAssertEqual(val.hashValue, weak.hashValue)
     }
+
+    func testCacheSetNil() throws {
+        let cache = Cache<String, String>(countLimit: 10)
+
+        cache["1"] = "asdf"
+
+        XCTAssertNotNil(cache["1"])
+
+        cache["1"] = nil
+
+        XCTAssertNil(cache["1"])
+    }
+
+    func testCacheLimits() throws {
+        let cache = Cache<String, String>(countLimit: 10)
+
+        XCTAssertEqual(cache.countLimit, 10)
+
+        cache.totalCostLimit = 1000
+
+        XCTAssertEqual(cache.totalCostLimit, 1000)
+    }
+
 }
