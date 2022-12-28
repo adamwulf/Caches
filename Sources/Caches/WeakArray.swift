@@ -72,8 +72,16 @@ import Foundation
         return arr.removeAll()
     }
 
+    /// - returns: The exact count of items in the array, excluding any items that have dealloc'd since being added to the array.
+    /// - complexity: O(n)
+    ///
+    /// This iterates over all items in the array to count which have not yet been deallocated.
     public var count: Int { return arr.compactMap({ $0.value }).count }
 
+    /// - returns: An estimate of the number of items in the array. This number will always be greater than or equal to `count`.
+    /// - complexity: O(1)
+    ///
+    /// This value may be higher than the actual number of non-deallocated objects in the array.
     public var estimatedCount: Int { return arr.count }
 
     public var isEmpty: Bool { return arr.isEmpty }
